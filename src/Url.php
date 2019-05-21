@@ -41,7 +41,12 @@ class Url
         return $this->scheme(true);
     }
 
-    public function scheme(bool $secure = true)
+    public function nonSecure()
+    {
+        return $this->scheme(false);
+    }
+
+    private function scheme(bool $secure = true)
     {
         $this->forceScheme = true;
         $this->secure = $secure;

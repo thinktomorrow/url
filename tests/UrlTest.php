@@ -160,7 +160,7 @@ class UrlTest extends TestCase
         $this->assertEquals('http://example.com/fr/foo/bar',
             Url::fromString('https://example.com/foo/bar')
                 ->localize('fr', ['fr' => 'BE_fr', '/' => 'en'])
-                ->scheme(false)
+                ->nonSecure()
                 ->get()
         );
     }
@@ -201,13 +201,7 @@ class UrlTest extends TestCase
     /** @test */
     public function url_can_be_forced_to_prepend_non_secure_scheme()
     {
-        $this->assertEquals('http://foobar.com', Url::fromString('foobar.com')->scheme(false)->get());
-    }
-
-    /** @test */
-    public function prepending_url_is_by_default_with_secure_scheme()
-    {
-        $this->assertEquals('https://foobar.com', Url::fromString('foobar.com')->scheme()->get());
+        $this->assertEquals('http://foobar.com', Url::fromString('foobar.com')->nonSecure()->get());
     }
 
     /** @test */
