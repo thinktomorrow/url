@@ -33,10 +33,19 @@ tools:
             - tests
 
 build:
-    tests:
+  environment:
+    php: 7.2.13
+  nodes:
+    analysis:
+      tests:
         override:
-            -
-                command: 'vendor/bin/phpunit --coverage-clover=build/logs/clover.xml --configuration phpunit.xml.dist'
-                coverage:
-                    file: 'build/logs/clover.xml'
-                    format: 'clover'
+          - php-scrutinizer-run
+
+    tests-and-coverage:
+      tests:
+          override:
+              -
+                  command: 'vendor/bin/phpunit --coverage-clover=build/logs/clover.xml --configuration phpunit.xml'
+                  coverage:
+                      file: 'build/logs/clover.xml'
+                      format: 'clover'
