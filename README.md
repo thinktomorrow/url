@@ -61,16 +61,16 @@ If you discover any security related issues, please email ben@thinktomorrow.be i
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
-[ico-version]: https://img.shields.io/packagist/v/thinktomorrow/locale.svg?style=flat-square
+[ico-version]: https://img.shields.io/packagist/v/thinktomorrow/url.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-travis]: https://img.shields.io/travis/thinktomorrow/locale/master.svg?style=flat-square
-[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/thinktomorrow/locale.svg?style=flat-square
-[ico-code-quality]: https://img.shields.io/scrutinizer/g/thinktomorrow/locale.svg?style=flat-square
-[ico-downloads]: https://img.shields.io/packagist/dt/thinktomorrow/locale.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/thinktomorrow/url/master.svg?style=flat-square
+[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/thinktomorrow/url.svg?style=flat-square
+[ico-code-quality]: https://img.shields.io/scrutinizer/g/thinktomorrow/url.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/thinktomorrow/url.svg?style=flat-square
 
-[link-packagist]: https://packagist.org/packages/thinktomorrow/locale
-[link-travis]: https://travis-ci.org/thinktomorrow/locale
-[link-scrutinizer]: https://scrutinizer-ci.com/g/thinktomorrow/locale/code-structure
-[link-code-quality]: https://scrutinizer-ci.com/g/thinktomorrow/locale
-[link-downloads]: https://packagist.org/packages/thinktomorrow/locale
+[link-packagist]: https://packagist.org/packages/thinktomorrow/url
+[link-travis]: https://travis-ci.org/thinktomorrow/url
+[link-scrutinizer]: https://scrutinizer-ci.com/g/thinktomorrow/url/code-structure
+[link-code-quality]: https://scrutinizer-ci.com/g/thinktomorrow/url
+[link-downloads]: https://packagist.org/packages/thinktomorrow/url
 [link-author]: https://github.com/bencavens
