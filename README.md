@@ -1,4 +1,4 @@
-# locale
+# Url
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE.md)
@@ -7,40 +7,60 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
+A handy url helper class for handling url string parsing and assembly.
+This small package is framework agnostic and has no dependencies.
+
 ## Install
 
 Via Composer
-
 ``` bash
 $ composer require thinktomorrow/url
 ```
 
-The package will be autodiscovered if you're using laravel so no need to add the provider to the config/app.php file in this case.
+## Prepending a scheme
+You can use the `Thinktomorrow\Url\Url` class to manipulate and parse your url string.
 
-## Usage
-
-This package only has 2 classes Url and Root.
-The Url class is used to make sure your url is formatted properly.
-
-Additionally you can localize it, secure it and set a custom root url.
-
+You can secure an url with the `secure()` method.
 ```php
-Url::fromString('/foo/bar')
-    ->setCustomRoot(Root::fromString('https://example.com'))
-    ->localize('fr')
-    ->secure(true)
-    ->get()
+Url::fromString('example.com')->secure()->get(); // 'https://example.com'
 ```
 
-This will return `https://example.com/fr/foo/bar`.
-
-Secondly the Root class is used to make sure the root is formatted properly.
-
+By default the usage of `scheme` forces a secure scheme. You can force a non-secure scheme with the `nonSecure` method.
 ```php
-Root::fromString('https://example.com')->valid();
-Root::fromString('https://example.com')->host();
-Root::fromString('https://example.com')->scheme();
-Root::fromString('https://example.com')->secure()->get();
+Url::fromString('example.com')->nonSecure()->get(); // 'http://example.com'
+Url::fromString('https://example.com')->nonSecure()->get(); // 'http://example.com'
+```
+
+## Changing url root
+In the case you need to change the url root, you can use the `setCustomRoot` method.
+This expects a `\Thinktomorrow\Url\Root` object as argument.
+```php
+Url::fromString('http://example.com/foobar')
+    ->setCustomRoot(Root::fromString('https://newroot.be'))
+    ->get(); // 'https://newroot.be/foobar'
+```
+
+## Localizing the url
+In case you use the url path segment for localization purposes, you can inject the locale segment with the `localize` method
+```php
+Url::fromString('http://example.com/foobar')
+    ->localize('en')
+    ->get(); // 'http://example.com/en/foobar'
+```
+
+The `localize` method also accepts a second parameter to enlist all available locales. In the case that passed url
+contains any of these locales, it will be properly stripped off first.
+```php
+Url::fromString('http://example.com/en/foobar')
+    ->localize('fr', ['en','fr'])
+    ->get(); // 'http://example.com/fr/foobar'
+```
+
+If you pass `null` as the locale parameter, any locale segment will be removed.
+```php
+Url::fromString('http://example.com/en/foobar')
+    ->localize(null, ['en','fr'])
+    ->get(); // 'http://example.com/foobar'
 ```
 
 ## Testing
@@ -56,6 +76,7 @@ If you discover any security related issues, please email ben@thinktomorrow.be i
 ## Credits
 
 - Ben Cavens <ben@thinktomorrow.be>
+- Philippe Damen <philippe@thinktomorrow.be>
 
 ## License
 
