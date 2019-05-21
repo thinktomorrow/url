@@ -11,6 +11,11 @@ class Url
 
     private $secure;
     private $forceScheme = false;
+
+    /**
+     * Schemeless url is considered to be an url with a // prepend.
+     * @var bool
+     */
     private $schemeless = false;
     private $absolute = false;
 
@@ -31,9 +36,15 @@ class Url
         return $this;
     }
 
-    public function secure($secure = true)
+    public function secure()
     {
-        $this->secure = (bool) $secure;
+        return $this->scheme(true);
+    }
+
+    public function scheme(bool $secure = true)
+    {
+        $this->forceScheme = true;
+        $this->secure = $secure;
 
         return $this;
     }
@@ -121,22 +132,8 @@ class Url
 
     private function reassemble(): string
     {
-        $scheme = (isset($this->parsed['scheme']))
-            ? $this->parsed['scheme'].'://'
-            : ($this->schemeless ? '//' : '');
-
-        // Convert to secure scheme if needed or vice versa
-        if ($scheme == 'http://' && $this->secure) {
-            $scheme = 'https://';
-        } elseif ($scheme == 'https://' && false === $this->secure) {
-            $scheme = 'http://';
-        }elseif($scheme == "" && $this->forceScheme)
-        {
-            $scheme = $this->secure ? 'https://' : 'http://';
-        }
-
         return
-            $scheme
+            $this->assembleScheme()
             .((isset($this->parsed['user'])) ? $this->parsed['user'].((isset($this->parsed['pass'])) ? ':'.$this->parsed['pass'] : '').'@' : '')
             .((isset($this->parsed['host'])) ? $this->parsed['host'] : '')
             .((isset($this->parsed['port'])) ? ':'.$this->parsed['port'] : '')
@@ -166,10 +163,17 @@ class Url
             .((isset($this->parsed['fragment'])) ? '#'.$this->parsed['fragment'] : '');
     }
 
-    public function forceScheme() 
+    private function assembleScheme(): string
     {
-        $this->forceScheme = true;
+        $scheme = (isset($this->parsed['scheme']))
+            ? $this->parsed['scheme'] . '://'
+            : ($this->schemeless ? '//' : '');
 
-        return $this;
+        // Convert to secure scheme if needed or vice versa
+        if(!$this->forceScheme){
+            return $scheme;
+        }
+
+        return $this->secure ? 'https://' : 'http://';
     }
 }

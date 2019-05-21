@@ -127,7 +127,7 @@ class UrlTest extends TestCase
             Url::fromString('/foo/bar')
                 ->setCustomRoot(Root::fromString('https://example.com'))
                 ->localize('fr')
-                ->secure(true)
+                ->secure()
                 ->get()
         );
     }
@@ -160,7 +160,7 @@ class UrlTest extends TestCase
         $this->assertEquals('http://example.com/fr/foo/bar',
             Url::fromString('https://example.com/foo/bar')
                 ->localize('fr', ['fr' => 'BE_fr', '/' => 'en'])
-                ->secure(false)
+                ->scheme(false)
                 ->get()
         );
     }
@@ -190,15 +190,32 @@ class UrlTest extends TestCase
     }
 
     /** @test */
-    public function url_can_be_forced_to_prepend_scheme()
+    public function url_scheme_stays_the_same()
     {
-        $this->assertEquals('http://foobar.com', Url::fromString('foobar.com')->forceScheme()->get());
+        $this->assertEquals('http://foobar.com', Url::fromString('http://foobar.com')->get());
+        $this->assertEquals('https://foobar.com', Url::fromString('https://foobar.com')->get());
+        $this->assertEquals('//foobar.com', Url::fromString('//foobar.com')->get());
+        $this->assertEquals('foobar.com', Url::fromString('foobar.com')->get());
+    }
+
+    /** @test */
+    public function url_can_be_forced_to_prepend_non_secure_scheme()
+    {
+        $this->assertEquals('http://foobar.com', Url::fromString('foobar.com')->scheme(false)->get());
+    }
+
+    /** @test */
+    public function prepending_url_is_by_default_with_secure_scheme()
+    {
+        $this->assertEquals('https://foobar.com', Url::fromString('foobar.com')->scheme()->get());
     }
 
     /** @test */
     public function url_can_be_forced_to_prepend_secure_scheme()
     {
-        $this->assertEquals('https://foobar.com', Url::fromString('foobar.com')->secure(true)->forceScheme()->get());
+        $this->assertEquals('https://foobar.com', Url::fromString('foobar.com')->secure()->get());
+        $this->assertEquals('https://foobar.com', Url::fromString('http://foobar.com')->secure()->get());
+        $this->assertEquals('https://foobar.com', Url::fromString('https://foobar.com')->secure()->get());
     }
 
     /** @test */
