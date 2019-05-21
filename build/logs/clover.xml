@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1558426919">
-  <project timestamp="1558426919">
+<coverage generated="1558431400">
+  <project timestamp="1558431400">
     <package name="Thinktomorrow\Url\Exceptions">
       <file name="/Users/philippedamen/projects/url/src/Exceptions/InvalidUrl.php">
         <class name="Thinktomorrow\Url\Exceptions\InvalidUrl" namespace="Thinktomorrow\Url\Exceptions">
