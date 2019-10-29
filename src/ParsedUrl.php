@@ -100,10 +100,10 @@ class ParsedUrl
     {
         return  $this->assembleScheme() .
                 $this->host() .
-                ($this->port() ? ':' . $this->port() : '') .
+                ($this->hasPort() ? ':' . $this->port() : '') .
                 $this->path() .
-                ($this->query() ? '?' . $this->query() : '') .
-                ($this->hash() ? '#' . $this->hash() : '');
+                ($this->hasQuery() ? '?' . $this->query() : '') .
+                ($this->hasHash() ? '#' . $this->hash() : '');
     }
 
     private function assembleScheme(): string
