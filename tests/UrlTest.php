@@ -133,6 +133,18 @@ class UrlTest extends TestCase
     }
 
     /** @test */
+    public function it_can_set_custom_unsecure_root_with_secure()
+    {
+        $this->assertEquals('https://example.com/fr/foo/bar',
+            Url::fromString('/foo/bar')
+                ->setCustomRoot(Root::fromString('http://example.com'))
+                ->localize('fr')
+                ->secure()
+                ->get()
+        );
+    }
+
+    /** @test */
     public function it_can_set_custom_root_without_path()
     {
         $this->assertEquals('https://example.com',

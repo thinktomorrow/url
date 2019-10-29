@@ -9,7 +9,7 @@ class Url
 
     private $root;
 
-    private $secure;
+    private $secure = false;
 
     private function __construct(ParsedUrl $parsedUrl)
     {
@@ -41,6 +41,7 @@ class Url
     private function scheme(bool $secure = true)
     {
         $this->parsedUrl = $this->parsedUrl->replaceScheme($secure ? 'https' : 'http');
+        $this->secure = $secure;
 
         return $this;
     }
@@ -107,7 +108,7 @@ class Url
     private function reassembleWithoutRoot()
     {
         /**
-         * In some rare conditions the path in interpreted as the host when there is no domain.tld format given.
+         * In some rare conditions the path is interpreted as the host when there is no domain.tld format given.
          * This is still considered a valid url, be it with only a tld as indication.
          */
         $path = ($this->parsedUrl->hasPath() && $this->parsedUrl->path() != $this->root->host())
