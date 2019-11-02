@@ -26,7 +26,7 @@ class ParsedUrl
         $this->hash = $hash;
     }
 
-    public static function fromUrlString(string $url)
+    public static function fromString(string $url)
     {
         return new static(...array_values(static::parse($url)));
     }

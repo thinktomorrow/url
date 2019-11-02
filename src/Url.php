@@ -14,7 +14,7 @@ class Url
 
     public static function fromString(string $url)
     {
-        return new static( ParsedUrl::fromUrlString($url) );
+        return new static( ParsedUrl::fromString($url) );
     }
 
     public function setCustomRoot(Root $root)
