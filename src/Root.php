@@ -39,7 +39,7 @@ class Root
             $this->valid = true;
         }
 
-        if ($scheme == 'https') {
+        if ($this->composeScheme() == 'https://') {
             $this->secure();
         }
     }
@@ -51,10 +51,9 @@ class Root
 
     public function get()
     {
-        $scheme = $this->scheme() ? $this->scheme().'://' : ($this->anonymousScheme ? '//' : $this->defaultScheme);
-        $port = ($this->port()) ? ':'.$this->port : null;
-
-        return $scheme.$this->host().$port;
+        return $this->composeScheme() .
+                $this->host() .
+                ( $this->port() ? ':'.$this->port : null );
     }
 
     public function valid(): bool
@@ -68,6 +67,11 @@ class Root
         $this->scheme = 'https';
 
         return $this;
+    }
+
+    private function composeScheme()
+    {
+        return $this->scheme() ? $this->scheme().'://' : ($this->anonymousScheme ? '//' : $this->defaultScheme);
     }
 
     public function replaceScheme(string $scheme): self
@@ -109,7 +113,6 @@ class Root
 
     private static function parse(string $url)
     {
-        // Sanitize url input a bit to remove double slashes, but do not remove first slashes
         if (in_array($url, ['//','/'])){
             return [
                 'scheme'          => null,
