@@ -184,7 +184,7 @@ class UrlTest extends TestCase
             '/foo/bar'                  => false,
             'foo/bar'                   => false,
             ''                          => false,
-            'example.com'               => false,
+            'example.com'               => true,
             'http://example.com'        => true,
             '//example.com/foo/bar?s=q' => true,
             'https://example.com'       => true,
@@ -198,7 +198,7 @@ class UrlTest extends TestCase
     /** @test */
     public function instance_can_be_printed_as_string()
     {
-        $this->assertEquals('foobar.com', Url::fromString('foobar.com'));
+        $this->assertEquals('foobar.com', (string) Url::fromString('foobar.com'));
     }
 
     /** @test */

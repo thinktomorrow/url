@@ -6,14 +6,8 @@ use Thinktomorrow\Url\Exceptions\InvalidUrl;
 
 class ParsedUrl
 {
-    /** @var null|string */
-    private $scheme;
-
-    /** @var null|string */
-    private $host;
-
-    /** @var string|null */
-    private $port;
+    /** @var Root */
+    private $root;
 
     /** @var null|string */
     private $path;
@@ -24,11 +18,9 @@ class ParsedUrl
     /** @var null|string */
     private $hash;
 
-    public function __construct(?string $scheme = null, ?string $host = null, ?string $port = null, ?string $path = null, ?string $query = null, ?string $hash = null)
+    public function __construct(Root $root, ?string $path = null, ?string $query = null, ?string $hash = null)
     {
-        $this->scheme = $scheme;
-        $this->host = $host;
-        $this->port = $port;
+        $this->root = $root;
         $this->path = $path;
         $this->query = $query;
         $this->hash = $hash;
@@ -41,31 +33,10 @@ class ParsedUrl
 
     public function get(): string
     {
-        return $this->reassembleUrl();
-    }
-
-    public function replaceScheme(string $scheme): self
-    {
-        return new static(
-            $scheme,
-            $this->host,
-            $this->port,
-            $this->path,
-            $this->query,
-            $this->hash
-        );
-    }
-
-    public function replacePath(string $path): self
-    {
-        return new static(
-            $this->scheme,
-            $this->host,
-            $this->port,
-            $path,
-            $this->query,
-            $this->hash
-        );
+        return  $this->root->get() .
+            ($this->hasPath() ? '/' . $this->path() : '') .
+            ($this->hasQuery() ? '?' . $this->query() : '') .
+            ($this->hasHash() ? '#' . $this->hash() : '');
     }
 
     private static function parse(string $url): array
@@ -82,53 +53,60 @@ class ParsedUrl
             throw new InvalidUrl('Failed to parse url. Invalid url ['.$url.'] passed as parameter.');
         }
 
-        // If a schemeless url is passed, parse_url will ignore this and strip the first tags
-        // so we need to explicitly reassemble the 'anonymous scheme' manually
-        $hasAnonymousScheme = (0 === strpos($url, '//') && isset($parsed['host']));
+        $root = Root::fromString($url)->defaultScheme(null);
 
         return [
-            'scheme' => $parsed['scheme'] ?? ($hasAnonymousScheme ? '//' : null),
-            'host'   => $parsed['host'] ?? null,
-            'port'   => $parsed['port'] ?? null,
-            'path'   => $parsed['path'] ?? null,
+            'root' => $root,
+            // Check if path could match host because this means something as foobar.com is passed and this is regarded as 'path' by the parse_url function
+            'path'   => (isset($parsed['path']) && $parsed['path'] && $parsed['path'] != $root->host()) ? trim($parsed['path'], '/') : null,
             'query'  => $parsed['query'] ?? null,
             'hash'   => $parsed['fragment'] ?? null,
         ];
     }
 
-    private function reassembleUrl(): string
+    public function replaceRoot(Root $root): self
     {
-        return  $this->assembleScheme() .
-                $this->host() .
-                ($this->hasPort() ? ':' . $this->port() : '') .
-                $this->path() .
-                ($this->hasQuery() ? '?' . $this->query() : '') .
-                ($this->hasHash() ? '#' . $this->hash() : '');
+        return new static(
+            $root,
+            $this->path,
+            $this->query,
+            $this->hash
+        );
     }
 
-    private function assembleScheme(): string
+    public function replaceScheme(string $scheme): self
     {
-        if(!$this->hasScheme()) return '';
+        return new static(
+            $this->root->replaceScheme($scheme),
+            $this->path,
+            $this->query,
+            $this->hash
+        );
+    }
 
-        // Anonymous scheme already ends with double slashes
-        if($this->scheme() == '//') return $this->scheme();
-
-        return $this->scheme() .'://';
+    public function replacePath(string $path): self
+    {
+        return new static(
+            $this->root,
+            trim($path, '/'),
+            $this->query,
+            $this->hash
+        );
     }
 
     public function scheme(): ?string
     {
-        return $this->scheme;
+        return $this->root->scheme();
     }
 
     public function host(): ?string
     {
-        return $this->host;
+        return $this->root->host();
     }
 
     public function port(): ?string
     {
-        return $this->port;
+        return $this->root->port();
     }
 
     public function path(): ?string
@@ -148,17 +126,17 @@ class ParsedUrl
 
     public function hasScheme(): bool
     {
-        return !!$this->scheme;
+        return !!$this->root->scheme();
     }
 
     public function hasHost(): bool
     {
-        return !!$this->host;
+        return !!$this->root->host();
     }
 
     public function hasPort(): bool
     {
-        return !!$this->port;
+        return !!$this->root->port();
     }
 
     public function hasPath(): bool
