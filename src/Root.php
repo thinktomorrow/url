@@ -46,7 +46,9 @@ class Root
 
     public static function fromString(string $host)
     {
-        return new static(...array_values(static::parse($host)));
+        $parsed = static::parse($host);
+
+        return new static($parsed['scheme'], $parsed['host'], $parsed['port'], $parsed['anonymousScheme']);
     }
 
     public function get()
