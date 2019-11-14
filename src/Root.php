@@ -6,36 +6,54 @@ use Thinktomorrow\Url\Exceptions\InvalidUrl;
 
 class Root
 {
-    private $valid = false;
-
+    /** @var string|null */
     private $scheme;
-    private $schemeless = false;
-    private $defaultScheme = 'http';
-    private $secure = false;
 
+    /** @var string|null */
     private $host;
+
+    /** @var string|null */
     private $port;
 
-    private function __construct(string $host)
+    /** @var bool */
+    private $anonymousScheme;
+
+    /** @var null|string */
+    private $defaultScheme;
+
+    /** @var bool */
+    private $secure = false;
+
+    /** @var bool */
+    private $valid = false;
+
+    private function __construct(?string $scheme = null, ?string $host = null, ?string $port = null, bool $anonymousScheme, ?string $defaultScheme = 'http://')
     {
-        $this->parse($host);
+        $this->scheme = $scheme;
+        $this->host = $host;
+        $this->port = $port;
+        $this->anonymousScheme = $anonymousScheme;
+        $this->defaultScheme = $defaultScheme;
 
         if (false !== filter_var($this->get(), FILTER_VALIDATE_URL)) {
             $this->valid = true;
+        }
+
+        if ($this->composeScheme() == 'https://') {
+            $this->secure();
         }
     }
 
     public static function fromString(string $host)
     {
-        return new self($host);
+        return new static(...array_values(static::parse($host)));
     }
 
     public function get()
     {
-        $scheme = (!is_null($this->scheme)) ? $this->scheme.'://' : ($this->schemeless ? '//' : $this->defaultScheme.'://');
-        $port = (!is_null($this->port)) ? ':'.$this->port : null;
-
-        return $scheme.$this->host.$port;
+        return $this->composeScheme() .
+                $this->host() .
+                ( $this->port() ? ':'.$this->port : null );
     }
 
     public function valid(): bool
@@ -51,7 +69,34 @@ class Root
         return $this;
     }
 
-    public function host(): string
+    private function composeScheme()
+    {
+        return $this->scheme() ? $this->scheme().'://' : ($this->anonymousScheme ? '//' : $this->defaultScheme);
+    }
+
+    public function replaceScheme(string $scheme): self
+    {
+        return new static(
+            $scheme,
+            $this->host,
+            $this->port,
+            false,
+            $this->defaultScheme
+        );
+    }
+
+    public function defaultScheme(?string $scheme = null): self
+    {
+        return new static(
+            $this->scheme,
+            $this->host,
+            $this->port,
+            $this->anonymousScheme,
+            $scheme
+        );
+    }
+
+    public function host(): ?string
     {
         return $this->host;
     }
@@ -61,29 +106,34 @@ class Root
         return $this->scheme;
     }
 
-    private function parse(string $host)
+    public function port(): ?string
     {
-        // Sanitize url input a bit to remove double slashes, but do not remove first slashes
-        if ($host == '//') {
-            $host = '/';
+        return $this->port;
+    }
+
+    private static function parse(string $url)
+    {
+        if (in_array($url, ['//','/'])){
+            return [
+                'scheme'          => null,
+                'host'            => null,
+                'port'            => null,
+                'anonymousScheme' => false,
+            ];
         }
 
-        $parsed = parse_url($host);
+        $parsed = parse_url($url);
+
         if (false === $parsed) {
-            throw new InvalidUrl('Failed to parse url. Invalid url ['.$host.'] passed as parameter.');
+            throw new InvalidUrl('Failed to parse url. Invalid url ['.$url.'] passed as parameter.');
         }
 
-        // If a schemeless url is passed, parse_url will ignore this and strip the first tags
-        // so we keep a reminder to explicitly reassemble the 'anonymous scheme' manually
-        $this->schemeless = !isset($parsed['scheme']) && (0 === strpos($host, '//') && isset($parsed['host']));
-
-        $this->scheme = $parsed['scheme'] ?? null;
-        if ($this->scheme == 'https') {
-            $this->secure();
-        }
-
-        $this->host = $this->parseHost($parsed);
-        $this->port = $parsed['port'] ?? null;
+        return [
+            'scheme'          => $parsed['scheme'] ?? null,
+            'host'            => static::parseHost($parsed),
+            'port'            => $parsed['port'] ?? null,
+            'anonymousScheme' => static::isAnonymousScheme($url),
+        ];
     }
 
     public function __toString(): string
@@ -91,14 +141,38 @@ class Root
         return $this->get();
     }
 
-    private function parseHost(array $parsed): string
+    /**
+     * If an url is passed with anonymous scheme, e.g. //example.com, parse_url will ignore this and
+     * strip the first tags so we need to explicitly reassemble the 'anonymous scheme' manually
+     *
+     * @param string $host
+     * @return bool
+     */
+    private static function isAnonymousScheme(string $host): bool
+    {
+        $parsed = parse_url($host);
+
+        return !isset($parsed['scheme']) && (0 === strpos($host, '//') && isset($parsed['host']));
+    }
+
+    private static function parseHost(array $parsed): ?string
     {
         if (isset($parsed['host'])) {
             return $parsed['host'];
         }
 
-        return (0 < strpos($parsed['path'], '/'))
-                    ? substr($parsed['path'], 0, strpos($parsed['path'], '/'))
-                    : $parsed['path'];
+        if(!isset($parsed['path'])) return null;
+
+        // e.g. /foo/bar
+        if((0 === strpos($parsed['path'], '/'))) return null;
+
+        // Invalid tld (missing .tld)
+        if(false == strpos($parsed['path'], '.')) return null;
+
+        // e.g. example.com/foo
+        if( (0 < strpos($parsed['path'], '/')) ) return substr($parsed['path'], 0, strpos($parsed['path'], '/'));
+
+        // e.g. foo or example.com
+        return $parsed['path'];
     }
 }

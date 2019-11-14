@@ -21,20 +21,20 @@ class RootTest extends TestCase
             'example.com'                => 'http://example.com',
             'example.com/'               => 'http://example.com',
             'example.com/foo/bar'        => 'http://example.com',
-            'foobar'                     => 'http://foobar',
-            'foo/bar'                    => 'http://foo',
             'http://example.com'         => 'http://example.com',
             'https://example.com'        => 'https://example.com',
             'http://example.com/foo/bar' => 'http://example.com',
             'localhost:5000'             => 'http://localhost:5000',
             '127.0.0.1'                  => 'http://127.0.0.1',
+            'foobar'                     => 'http://', // invalid host
+            'foo/bar'                    => 'http://', // invalid host
 
             // Schemeless
             '//example.com/foo/bar?s=q'  => '//example.com',
 
-            // Edgecases - are there any?
-            '/'                          => 'http:///', // Is this expected behaviour?
-            '//'                         => 'http:///',
+            // Edgecases where root is completely empty - are there any?
+            '/'                          => 'http://',
+            '//'                         => 'http://',
             ''                           => 'http://',
         ];
 
@@ -63,7 +63,9 @@ class RootTest extends TestCase
     public function it_can_validate_root()
     {
         $this->assertFalse(Root::fromString('')->valid());
-        $this->assertTrue(Root::fromString('foobar')->valid());
+        $this->assertFalse(Root::fromString('foobar')->valid());
+
+        $this->assertTrue(Root::fromString('foobar.com')->valid());
         $this->assertTrue(Root::fromString('https://example.com')->valid());
     }
 
