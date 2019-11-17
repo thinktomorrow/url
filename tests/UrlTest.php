@@ -79,6 +79,14 @@ class UrlTest extends TestCase
     }
 
     /** @test */
+    public function with_missing_host_it_still_tries_to_render_a_proper_url()
+    {
+        $this->assertEquals('/foo/bar', Url::fromString('foo/bar')->get());
+        $this->assertEquals('http://foo/bar', Url::fromString('foo/bar')->nonSecure()->get());
+        $this->assertEquals('https://foo/bar', Url::fromString('foo/bar')->secure()->get());
+    }
+
+    /** @test */
     public function it_removes_existing_locale_segment()
     {
         $urls = [

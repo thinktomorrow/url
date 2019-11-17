@@ -7,14 +7,46 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-A handy url helper class for handling url string parsing and assembly.
+An url helper class to easily extract certain parts of the url. It is basically a wrapper around the native `parse_url` function. 
+Currently, `parse_url` has no solid support for parsing relative url strings or url without an explicit scheme. This package aims to
+provide that support.
+
 This small package is framework agnostic and has no dependencies.
 
-## Install
-
-Via Composer
+## Install via composer
 ``` bash
 $ composer require thinktomorrow/url
+```
+
+## Usage
+
+### Create an Url
+Create a new url instance by calling the static `fromString` method with your url string. 
+Note that in case of a malformed url, an `InvalidUrl` exception will be thrown. This
+validation is based on what the native `parse_url` considers a malformed url string.
+```php
+\Thinktomorrow\Url\Url::fromString('https://example.com');
+```
+
+Now you have access to the different parts of the url string. You can retrieve the following parts:
+```php
+// scheme
+\Thinktomorrow\Url\Url::fromString('https://example.com')->scheme(); // https
+
+// host
+\Thinktomorrow\Url\Url::fromString('https://example.com')->host(); // example.com
+
+// port
+\Thinktomorrow\Url\Url::fromString('https://example.com:9000')->port(); // 9000
+
+// path
+\Thinktomorrow\Url\Url::fromString('https://example.com/foo/bar')->path(); // foo/bar
+
+// query
+\Thinktomorrow\Url\Url::fromString('https://example.com?foo=bar')->path(); // foo=bar
+
+// hash
+\Thinktomorrow\Url\Url::fromString('https://example.com#foobar')->hash(); // foobar
 ```
 
 ## Prepending a scheme

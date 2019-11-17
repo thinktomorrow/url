@@ -33,10 +33,12 @@ class ParsedUrl
 
     public function get(): string
     {
-        return  $this->root->get() .
+        $result = $this->root->get() .
             ($this->hasPath() ? '/' . $this->path() : '') .
             ($this->hasQuery() ? '?' . $this->query() : '') .
             ($this->hasHash() ? '#' . $this->hash() : '');
+
+        return str_replace('///','//',$result);
     }
 
     private static function parse(string $url): array
