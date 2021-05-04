@@ -70,6 +70,12 @@ class RootTest extends TestCase
     }
 
     /** @test */
+    public function it_can_validate_root_for_hashtag()
+    {
+        $this->assertFalse(Root::fromString('#')->valid());
+    }
+
+    /** @test */
     public function instance_can_be_printed_as_string()
     {
         $this->assertEquals('http://foobar.com', Root::fromString('foobar.com'));
