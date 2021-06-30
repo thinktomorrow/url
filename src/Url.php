@@ -46,6 +46,66 @@ class Url
         return $this->parsedUrl->get();
     }
 
+    public function getScheme(): ?string
+    {
+        return $this->parsedUrl->scheme();
+    }
+
+    public function getHost(): ?string
+    {
+        return $this->parsedUrl->host();
+    }
+
+    public function getPort(): ?string
+    {
+        return $this->parsedUrl->port();
+    }
+
+    public function getPath(): ?string
+    {
+        return $this->parsedUrl->path();
+    }
+
+    public function getQuery(): ?string
+    {
+        return $this->parsedUrl->query();
+    }
+
+    public function getHash(): ?string
+    {
+        return $this->parsedUrl->hash();
+    }
+
+    public function hasScheme(): bool
+    {
+        return $this->parsedUrl->hasScheme();
+    }
+
+    public function hasHost(): bool
+    {
+        return $this->parsedUrl->hasHost();
+    }
+
+    public function hasPort(): bool
+    {
+        return $this->parsedUrl->hasPort();
+    }
+
+    public function hasPath(): bool
+    {
+        return $this->parsedUrl->hasPath();
+    }
+
+    public function hasQuery(): bool
+    {
+        return $this->parsedUrl->hasQuery();
+    }
+
+    public function hasHash(): bool
+    {
+        return $this->parsedUrl->hasHash();
+    }
+
     public function isAbsolute(): bool
     {
         return $this->parsedUrl->hasHost();

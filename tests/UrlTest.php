@@ -239,4 +239,24 @@ class UrlTest extends TestCase
 
         Url::fromString('javascript://');
     }
+
+    /** @test */
+    public function url_provides_specific_parts()
+    {
+        $url = Url::fromString('https://foobar.com:5000/path/to/freedom?search=towards#heaven');
+
+        $this->assertEquals('https', $url->getScheme());
+        $this->assertEquals('foobar.com', $url->getHost());
+        $this->assertEquals('5000', $url->getPort());
+        $this->assertEquals('path/to/freedom', $url->getPath());
+        $this->assertEquals('search=towards', $url->getQuery());
+        $this->assertEquals('heaven', $url->getHash());
+
+        $this->assertTrue($url->hasScheme());
+        $this->assertTrue($url->hasPort());
+        $this->assertTrue($url->hasHost());
+        $this->assertTrue($url->hasPath());
+        $this->assertTrue($url->hasQuery());
+        $this->assertTrue($url->hasHash());
+    }
 }
