@@ -31,22 +31,22 @@ validation is based on what the native `parse_url` considers a malformed url str
 Now you have access to the different parts of the url string. You can retrieve the following parts:
 ```php
 // scheme
-\Thinktomorrow\Url\Url::fromString('https://example.com')->scheme(); // https
+\Thinktomorrow\Url\Url::fromString('https://example.com')->getScheme(); // https
 
 // host
-\Thinktomorrow\Url\Url::fromString('https://example.com')->host(); // example.com
+\Thinktomorrow\Url\Url::fromString('https://example.com')->getHost(); // example.com
 
 // port
-\Thinktomorrow\Url\Url::fromString('https://example.com:9000')->port(); // 9000
+\Thinktomorrow\Url\Url::fromString('https://example.com:9000')->getPort(); // 9000
 
 // path
-\Thinktomorrow\Url\Url::fromString('https://example.com/foo/bar')->path(); // foo/bar
+\Thinktomorrow\Url\Url::fromString('https://example.com/foo/bar')->getPath(); // foo/bar
 
 // query
-\Thinktomorrow\Url\Url::fromString('https://example.com?foo=bar')->path(); // foo=bar
+\Thinktomorrow\Url\Url::fromString('https://example.com?foo=bar')->getQuery(); // foo=bar
 
 // hash
-\Thinktomorrow\Url\Url::fromString('https://example.com#foobar')->hash(); // foobar
+\Thinktomorrow\Url\Url::fromString('https://example.com#foobar')->getHash(); // foobar
 ```
 
 ## Prepending a scheme
