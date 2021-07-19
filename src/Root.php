@@ -53,7 +53,7 @@ class Root
     {
         return $this->composeScheme() .
                 $this->host() .
-                ( $this->port() ? ':'.$this->port : null );
+                ($this->port() ? ':'.$this->port : null);
     }
 
     public function valid(): bool
@@ -113,11 +113,11 @@ class Root
 
     private static function parse(string $url)
     {
-        if (in_array($url, ['//','/'])){
+        if (in_array($url, ['//','/'])) {
             return [
-                'scheme'          => null,
-                'host'            => null,
-                'port'            => null,
+                'scheme' => null,
+                'host' => null,
+                'port' => null,
                 'anonymousScheme' => false,
             ];
         }
@@ -129,9 +129,9 @@ class Root
         }
 
         return [
-            'scheme'          => $parsed['scheme'] ?? null,
-            'host'            => static::parseHost($parsed),
-            'port'            => $parsed['port'] ?? null,
+            'scheme' => $parsed['scheme'] ?? null,
+            'host' => static::parseHost($parsed),
+            'port' => $parsed['port'] ?? null,
             'anonymousScheme' => static::isAnonymousScheme($url),
         ];
     }
@@ -152,7 +152,7 @@ class Root
     {
         $parsed = parse_url($host);
 
-        return !isset($parsed['scheme']) && (0 === strpos($host, '//') && isset($parsed['host']));
+        return ! isset($parsed['scheme']) && (0 === strpos($host, '//') && isset($parsed['host']));
     }
 
     private static function parseHost(array $parsed): ?string
@@ -161,16 +161,24 @@ class Root
             return $parsed['host'];
         }
 
-        if(!isset($parsed['path'])) return null;
+        if (! isset($parsed['path'])) {
+            return null;
+        }
 
         // e.g. /foo/bar
-        if((0 === strpos($parsed['path'], '/'))) return null;
+        if ((0 === strpos($parsed['path'], '/'))) {
+            return null;
+        }
 
         // Invalid tld (missing .tld)
-        if(false == strpos($parsed['path'], '.')) return null;
+        if (false == strpos($parsed['path'], '.')) {
+            return null;
+        }
 
         // e.g. example.com/foo
-        if( (0 < strpos($parsed['path'], '/')) ) return substr($parsed['path'], 0, strpos($parsed['path'], '/'));
+        if ((0 < strpos($parsed['path'], '/'))) {
+            return substr($parsed['path'], 0, strpos($parsed['path'], '/'));
+        }
 
         // e.g. foo or example.com
         return $parsed['path'];

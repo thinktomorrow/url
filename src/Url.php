@@ -14,7 +14,7 @@ class Url
 
     public static function fromString(string $url)
     {
-        return new static( ParsedUrl::fromString($url) );
+        return new static(ParsedUrl::fromString($url));
     }
 
     public function setCustomRoot(Root $root)
@@ -113,7 +113,9 @@ class Url
 
     public function localize(string $localeSegment = null, array $available_locales = [])
     {
-        $localizedPath = str_replace('//', '/',
+        $localizedPath = str_replace(
+            '//',
+            '/',
             rtrim('/'.trim($localeSegment.$this->delocalizePath($available_locales), '/'), '/')
         );
 
@@ -124,7 +126,7 @@ class Url
 
     private function delocalizePath(array $available_locales)
     {
-        if (!$this->parsedUrl->hasPath()) {
+        if (! $this->parsedUrl->hasPath()) {
             return;
         }
 
