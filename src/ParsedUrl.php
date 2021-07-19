@@ -38,7 +38,7 @@ class ParsedUrl
             ($this->hasQuery() ? '?' . $this->query() : '') .
             ($this->hasHash() ? '#' . $this->hash() : '');
 
-        return str_replace('///','//',$result);
+        return str_replace('///', '//', $result);
     }
 
     private static function parse(string $url): array
@@ -60,9 +60,9 @@ class ParsedUrl
         return [
             'root' => $root,
             // Check if path could match host because this means something as foobar.com is passed and this is regarded as 'path' by the parse_url function
-            'path'   => (isset($parsed['path']) && $parsed['path'] && $parsed['path'] != $root->host()) ? trim($parsed['path'], '/') : null,
-            'query'  => $parsed['query'] ?? null,
-            'hash'   => $parsed['fragment'] ?? null,
+            'path' => (isset($parsed['path']) && $parsed['path'] && $parsed['path'] != $root->host()) ? trim($parsed['path'], '/') : null,
+            'query' => $parsed['query'] ?? null,
+            'hash' => $parsed['fragment'] ?? null,
         ];
     }
 
@@ -128,31 +128,31 @@ class ParsedUrl
 
     public function hasScheme(): bool
     {
-        return !!$this->root->scheme();
+        return ! ! $this->root->scheme();
     }
 
     public function hasHost(): bool
     {
-        return !!$this->root->host();
+        return ! ! $this->root->host();
     }
 
     public function hasPort(): bool
     {
-        return !!$this->root->port();
+        return ! ! $this->root->port();
     }
 
     public function hasPath(): bool
     {
-        return !!$this->path;
+        return ! ! $this->path;
     }
 
     public function hasQuery(): bool
     {
-        return !!$this->query;
+        return ! ! $this->query;
     }
 
     public function hasHash(): bool
     {
-        return !!$this->hash;
+        return ! ! $this->hash;
     }
 }
