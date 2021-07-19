@@ -7,8 +7,8 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-An url helper class to easily extract certain parts of the url. It is basically a wrapper around the native `parse_url` function. 
-Currently, `parse_url` has no solid support for parsing relative url strings or url without an explicit scheme. This package aims to
+A URL helper class to easily extract certain parts of the url. It is basically a wrapper around the native `parse_url` function.
+Currently, `parse_url` has no solid support for parsing uri strings. This package aims to
 provide that support.
 
 This small package is framework agnostic and has no dependencies.
@@ -20,15 +20,17 @@ $ composer require thinktomorrow/url
 
 ## Usage
 
-### Create an Url
-Create a new url instance by calling the static `fromString` method with your url string. 
-Note that in case of a malformed url, an `InvalidUrl` exception will be thrown. This
-validation is based on what the native `parse_url` considers a malformed url string.
+### Create an Url instance
+Create a new url instance by calling the static `fromString` method with your url string.
 ```php
 \Thinktomorrow\Url\Url::fromString('https://example.com');
 ```
 
-Now you have access to the different parts of the url string. You can retrieve the following parts:
+In case of a malformed url string, an `InvalidUrl` exception will be thrown. This
+validation is based on what the native `parse_url` considers a malformed url string.
+
+### Parts of the url
+Via the Url instance, you have access to all the different parts of the url string. You can retrieve the following parts:
 ```php
 // scheme
 \Thinktomorrow\Url\Url::fromString('https://example.com')->getScheme(); // https
@@ -49,21 +51,21 @@ Now you have access to the different parts of the url string. You can retrieve t
 \Thinktomorrow\Url\Url::fromString('https://example.com#foobar')->getHash(); // foobar
 ```
 
-## Prepending a scheme
-You can use the `Thinktomorrow\Url\Url` class to manipulate and parse your url string.
+## Altering the url string
 
+### Securing a url
 You can secure an url with the `secure()` method.
 ```php
 Url::fromString('example.com')->secure()->get(); // 'https://example.com'
 ```
 
-By default the usage of `scheme` forces a secure scheme. You can force a non-secure scheme with the `nonSecure` method.
+You can force a non-secure scheme with the `nonSecure` method.
 ```php
 Url::fromString('example.com')->nonSecure()->get(); // 'http://example.com'
 Url::fromString('https://example.com')->nonSecure()->get(); // 'http://example.com'
 ```
 
-## Changing url root
+### Changing url root
 In the case you need to change the url root, you can use the `setCustomRoot` method.
 This expects a `\Thinktomorrow\Url\Root` object as argument.
 ```php
@@ -72,7 +74,7 @@ Url::fromString('http://example.com/foobar')
     ->get(); // 'https://newroot.be/foobar'
 ```
 
-## Localizing the url
+### Localizing the url
 In case you use the url path segment for localization purposes, you can inject the locale segment with the `localize` method
 ```php
 Url::fromString('http://example.com/foobar')
@@ -81,7 +83,7 @@ Url::fromString('http://example.com/foobar')
 ```
 
 The `localize` method also accepts a second parameter to enlist all available locales. In the case that passed url
-contains any of these locales, it will be properly stripped off first.
+contains any of these locales, the existing locale will be replaced by the new locale.
 ```php
 Url::fromString('http://example.com/en/foobar')
     ->localize('fr', ['en','fr'])

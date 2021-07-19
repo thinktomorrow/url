@@ -233,7 +233,7 @@ class UrlTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_exception_if_url_cannot_be_parsed()
+    public function it_throws_exception_if_passed_url_string_is_invalid()
     {
         $this->expectException(InvalidUrl::class);
 
