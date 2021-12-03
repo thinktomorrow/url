@@ -22,12 +22,12 @@ class Root
     private $defaultScheme;
 
     /** @var bool */
-    private $secure = false;
+    private bool $secure = false;
 
     /** @var bool */
     private $valid = false;
 
-    private function __construct(?string $scheme = null, ?string $host = null, ?string $port = null, bool $anonymousScheme, ?string $defaultScheme = 'http://')
+    private function __construct(?string $scheme = null, ?string $host = null, ?string $port = null, bool $anonymousScheme = false, ?string $defaultScheme = 'http://')
     {
         $this->scheme = $scheme;
         $this->host = $host;
