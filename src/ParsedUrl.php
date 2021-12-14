@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Thinktomorrow\Url;
 
-use JetBrains\PhpStorm\Pure;
 use JetBrains\PhpStorm\ArrayShape;
+use JetBrains\PhpStorm\Pure;
 use Thinktomorrow\Url\Exceptions\InvalidUrl;
 
 class ParsedUrl

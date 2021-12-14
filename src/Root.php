@@ -29,7 +29,6 @@ class Root
 //        if ($this->composeScheme() == 'https://') {
 //            $this->secure();
 //        }
-
     }
 
     public static function fromString(string $host): self
