@@ -1,22 +1,18 @@
 <?php
+declare(strict_types=1);
 
 namespace Thinktomorrow\Url;
 
+use JetBrains\PhpStorm\Pure;
+use JetBrains\PhpStorm\ArrayShape;
 use Thinktomorrow\Url\Exceptions\InvalidUrl;
 
 class ParsedUrl
 {
-    /** @var Root */
-    private $root;
-
-    /** @var null|string */
-    private $path;
-
-    /** @var null|string */
-    private $query;
-
-    /** @var null|string */
-    private $hash;
+    private Root $root;
+    private ?string $path;
+    private ?string $query;
+    private ?string $hash;
 
     public function __construct(Root $root, ?string $path = null, ?string $query = null, ?string $hash = null)
     {
@@ -26,7 +22,7 @@ class ParsedUrl
         $this->hash = $hash;
     }
 
-    public static function fromString(string $url)
+    public static function fromString(string $url): self
     {
         return new static(...array_values(static::parse($url)));
     }
@@ -41,6 +37,12 @@ class ParsedUrl
         return str_replace('///', '//', $result);
     }
 
+    #[ArrayShape([
+        'root' => Root::class,
+        'path' => 'null|string',
+        'query' => 'null|string',
+        'hash' => 'null|string',
+    ])]
     private static function parse(string $url): array
     {
         // Specific case where we accept double slashes and convert it to a relative url.
@@ -55,7 +57,7 @@ class ParsedUrl
             throw new InvalidUrl('Failed to parse url. Invalid url ['.$url.'] passed as parameter.');
         }
 
-        $root = Root::fromString($url)->defaultScheme(null);
+        $root = Root::fromString($url)->defaultScheme();
 
         return [
             'root' => $root,
@@ -66,6 +68,7 @@ class ParsedUrl
         ];
     }
 
+    #[Pure]
     public function replaceRoot(Root $root): self
     {
         return new static(
@@ -86,6 +89,7 @@ class ParsedUrl
         );
     }
 
+    #[Pure]
     public function replacePath(string $path): self
     {
         return new static(
@@ -96,16 +100,19 @@ class ParsedUrl
         );
     }
 
+    #[Pure]
     public function scheme(): ?string
     {
         return $this->root->scheme();
     }
 
+    #[Pure]
     public function host(): ?string
     {
         return $this->root->host();
     }
 
+    #[Pure]
     public function port(): ?string
     {
         return $this->root->port();
@@ -126,16 +133,19 @@ class ParsedUrl
         return $this->hash;
     }
 
+    #[Pure]
     public function hasScheme(): bool
     {
         return ! ! $this->root->scheme();
     }
 
+    #[Pure]
     public function hasHost(): bool
     {
         return ! ! $this->root->host();
     }
 
+    #[Pure]
     public function hasPort(): bool
     {
         return ! ! $this->root->port();

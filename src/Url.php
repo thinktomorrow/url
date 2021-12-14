@@ -1,47 +1,49 @@
 <?php
+declare(strict_types=1);
 
 namespace Thinktomorrow\Url;
 
+use JetBrains\PhpStorm\Pure;
+
 class Url
 {
-    /** @var ParsedUrl */
-    private $parsedUrl;
+    private ParsedUrl $parsedUrl;
 
     private function __construct(ParsedUrl $parsedUrl)
     {
         $this->parsedUrl = $parsedUrl;
     }
 
-    public static function fromString(string $url)
+    public static function fromString(string $url): self
     {
         return new static(ParsedUrl::fromString($url));
     }
 
-    public function setCustomRoot(Root $root)
+    public function setCustomRoot(Root $root): self
     {
         $this->parsedUrl = $this->parsedUrl->replaceRoot($root);
 
         return $this;
     }
 
-    public function secure()
+    public function secure(): self
     {
-        return $this->scheme(true);
+        return $this->scheme();
     }
 
-    public function nonSecure()
+    public function nonSecure(): self
     {
         return $this->scheme(false);
     }
 
-    private function scheme(bool $secure = true)
+    private function scheme(bool $secure = true): self
     {
         $this->parsedUrl = $this->parsedUrl->replaceScheme($secure ? 'https' : 'http');
 
         return $this;
     }
 
-    public function get()
+    public function get(): string
     {
         return $this->parsedUrl->get();
     }
@@ -61,16 +63,19 @@ class Url
         return $this->parsedUrl->port();
     }
 
+    #[Pure]
     public function getPath(): ?string
     {
         return $this->parsedUrl->path();
     }
 
+    #[Pure]
     public function getQuery(): ?string
     {
         return $this->parsedUrl->query();
     }
 
+    #[Pure]
     public function getHash(): ?string
     {
         return $this->parsedUrl->hash();
@@ -91,16 +96,19 @@ class Url
         return $this->parsedUrl->hasPort();
     }
 
+    #[Pure]
     public function hasPath(): bool
     {
         return $this->parsedUrl->hasPath();
     }
 
+    #[Pure]
     public function hasQuery(): bool
     {
         return $this->parsedUrl->hasQuery();
     }
 
+    #[Pure]
     public function hasHash(): bool
     {
         return $this->parsedUrl->hasHash();
@@ -111,7 +119,7 @@ class Url
         return $this->parsedUrl->hasHost();
     }
 
-    public function localize(string $localeSegment = null, array $available_locales = [])
+    public function localize(string $localeSegment = null, array $available_locales = []): self
     {
         $localizedPath = str_replace(
             '//',
@@ -124,10 +132,10 @@ class Url
         return $this;
     }
 
-    private function delocalizePath(array $available_locales)
+    private function delocalizePath(array $available_locales): string
     {
         if (! $this->parsedUrl->hasPath()) {
-            return;
+            return '';
         }
 
         $path_segments = explode('/', trim($this->parsedUrl->path(), '/'));

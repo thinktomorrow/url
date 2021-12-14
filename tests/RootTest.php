@@ -18,24 +18,24 @@ class RootTest extends TestCase
     public function it_normalizes_domain_to_complete_root()
     {
         $urls = [
-            'example.com' => 'http://example.com',
-            'example.com/' => 'http://example.com',
-            'example.com/foo/bar' => 'http://example.com',
+            'example.com' => 'https://example.com',
+            'example.com/' => 'https://example.com',
+            'example.com/foo/bar' => 'https://example.com',
             'http://example.com' => 'http://example.com',
             'https://example.com' => 'https://example.com',
             'http://example.com/foo/bar' => 'http://example.com',
-            'localhost:5000' => 'http://localhost:5000',
-            '127.0.0.1' => 'http://127.0.0.1',
-            'foobar' => 'http://', // invalid host
-            'foo/bar' => 'http://', // invalid host
+            'localhost:5000' => 'https://localhost:5000',
+            '127.0.0.1' => 'https://127.0.0.1',
+            'foobar' => 'https://', // invalid host
+            'foo/bar' => 'https://', // invalid host
 
             // Schemeless
             '//example.com/foo/bar?s=q' => '//example.com',
 
             // Edgecases where root is completely empty - are there any?
-            '/' => 'http://',
-            '//' => 'http://',
-            '' => 'http://',
+            '/' => 'https://',
+            '//' => 'https://',
+            '' => 'https://',
         ];
 
         foreach ($urls as $original => $result) {
@@ -78,7 +78,7 @@ class RootTest extends TestCase
     /** @test */
     public function instance_can_be_printed_as_string()
     {
-        $this->assertEquals('http://foobar.com', Root::fromString('foobar.com'));
+        $this->assertEquals('https://foobar.com', (string) Root::fromString('foobar.com'));
     }
 
     /** @test */

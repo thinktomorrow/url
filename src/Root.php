@@ -1,33 +1,22 @@
 <?php
+declare(strict_types=1);
 
 namespace Thinktomorrow\Url;
 
+use JetBrains\PhpStorm\Pure;
 use Thinktomorrow\Url\Exceptions\InvalidUrl;
 
 class Root
 {
-    /** @var string|null */
-    private $scheme;
+    private ?string $scheme;
+    private ?string $host;
+    private ?string $port;
 
-    /** @var string|null */
-    private $host;
+    private bool $anonymousScheme;
+    private ?string $defaultScheme;
+    private bool $valid;
 
-    /** @var string|null */
-    private $port;
-
-    /** @var bool */
-    private $anonymousScheme;
-
-    /** @var null|string */
-    private $defaultScheme;
-
-    /** @var bool */
-    private bool $secure = false;
-
-    /** @var bool */
-    private $valid = false;
-
-    private function __construct(?string $scheme = null, ?string $host = null, ?string $port = null, bool $anonymousScheme = false, ?string $defaultScheme = 'http://')
+    private function __construct(?string $scheme = null, ?string $host = null, ?string $port = null, bool $anonymousScheme = false, ?string $defaultScheme = 'https://')
     {
         $this->scheme = $scheme;
         $this->host = $host;
@@ -35,21 +24,21 @@ class Root
         $this->anonymousScheme = $anonymousScheme;
         $this->defaultScheme = $defaultScheme;
 
-        if (false !== filter_var($this->get(), FILTER_VALIDATE_URL)) {
-            $this->valid = true;
-        }
+        $this->valid = (false !== filter_var($this->get(), FILTER_VALIDATE_URL));
 
-        if ($this->composeScheme() == 'https://') {
-            $this->secure();
-        }
+//        if ($this->composeScheme() == 'https://') {
+//            $this->secure();
+//        }
+
     }
 
-    public static function fromString(string $host)
+    public static function fromString(string $host): self
     {
         return new static(...array_values(static::parse($host)));
     }
 
-    public function get()
+    #[Pure]
+    public function get(): string
     {
         return $this->composeScheme() .
                 $this->host() .
@@ -63,15 +52,17 @@ class Root
 
     public function secure(): self
     {
-        $this->secure = true;
         $this->scheme = 'https';
 
         return $this;
     }
 
-    private function composeScheme()
+    #[Pure]
+    private function composeScheme(): ?string
     {
-        return $this->scheme() ? $this->scheme().'://' : ($this->anonymousScheme ? '//' : $this->defaultScheme);
+        return $this->scheme()
+            ? $this->scheme().'://'
+            : ($this->anonymousScheme ? '//' : $this->defaultScheme);
     }
 
     public function replaceScheme(string $scheme): self
@@ -85,14 +76,14 @@ class Root
         );
     }
 
-    public function defaultScheme(?string $scheme = null): self
+    public function defaultScheme(?string $defaultScheme = null): self
     {
         return new static(
             $this->scheme,
             $this->host,
             $this->port,
             $this->anonymousScheme,
-            $scheme
+            $defaultScheme
         );
     }
 
@@ -111,7 +102,7 @@ class Root
         return $this->port;
     }
 
-    private static function parse(string $url)
+    private static function parse(string $url): array
     {
         if (in_array($url, ['//','/'])) {
             return [
@@ -131,11 +122,12 @@ class Root
         return [
             'scheme' => $parsed['scheme'] ?? null,
             'host' => static::parseHost($parsed),
-            'port' => $parsed['port'] ?? null,
+            'port' => isset($parsed['port']) ? (string) $parsed['port'] : null,
             'anonymousScheme' => static::isAnonymousScheme($url),
         ];
     }
 
+    #[Pure]
     public function __toString(): string
     {
         return $this->get();
@@ -143,7 +135,7 @@ class Root
 
     /**
      * If an url is passed with anonymous scheme, e.g. //example.com, parse_url will ignore this and
-     * strip the first tags so we need to explicitly reassemble the 'anonymous scheme' manually
+     * strip the first tags, so we need to explicitly reassemble the 'anonymous scheme' manually
      *
      * @param string $host
      * @return bool
@@ -152,7 +144,7 @@ class Root
     {
         $parsed = parse_url($host);
 
-        return ! isset($parsed['scheme']) && (0 === strpos($host, '//') && isset($parsed['host']));
+        return ! isset($parsed['scheme']) && (str_starts_with($host, '//') && isset($parsed['host']));
     }
 
     private static function parseHost(array $parsed): ?string
@@ -166,7 +158,7 @@ class Root
         }
 
         // e.g. /foo/bar
-        if ((0 === strpos($parsed['path'], '/'))) {
+        if ((str_starts_with($parsed['path'], '/'))) {
             return null;
         }
 
