@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Thinktomorrow\Url;
 
-use JetBrains\PhpStorm\Pure;
-
 class Url
 {
     private ParsedUrl $parsedUrl;
