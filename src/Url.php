@@ -63,19 +63,16 @@ class Url
         return $this->parsedUrl->port();
     }
 
-    #[Pure]
     public function getPath(): ?string
     {
         return $this->parsedUrl->path();
     }
 
-    #[Pure]
     public function getQuery(): ?string
     {
         return $this->parsedUrl->query();
     }
 
-    #[Pure]
     public function getHash(): ?string
     {
         return $this->parsedUrl->hash();
@@ -96,19 +93,16 @@ class Url
         return $this->parsedUrl->hasPort();
     }
 
-    #[Pure]
     public function hasPath(): bool
     {
         return $this->parsedUrl->hasPath();
     }
 
-    #[Pure]
     public function hasQuery(): bool
     {
         return $this->parsedUrl->hasQuery();
     }
 
-    #[Pure]
     public function hasHash(): bool
     {
         return $this->parsedUrl->hasHash();
