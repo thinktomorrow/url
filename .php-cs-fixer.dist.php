@@ -2,8 +2,8 @@
 
 $finder = Symfony\Component\Finder\Finder::create()
     ->in([
-        __DIR__.'/src',
-        __DIR__.'/tests',
+        __DIR__ . '/src',
+        __DIR__ . '/tests',
     ])
     ->name('*.php')
     ->ignoreDotFiles(true)
@@ -20,20 +20,15 @@ return (new PhpCsFixer\Config())
         'phpdoc_scalar' => true,
         'unary_operator_spaces' => true,
         'binary_operator_spaces' => true,
-        'logical_operators' => true,
         'blank_line_before_statement' => [
             'statements' => ['break', 'continue', 'declare', 'return', 'throw', 'try'],
         ],
         'phpdoc_single_line_var_spacing' => true,
         'phpdoc_var_without_name' => true,
-        'class_attributes_separation' => [
-            'elements' => [
-                'method' => 'one'
-            ],
-        ],
         'method_argument_space' => [
             'on_multiline' => 'ensure_fully_multiline',
             'keep_multiple_spaces_after_comma' => true,
         ],
+        'php_unit_method_casing' => ['case' => 'snake_case'],
     ])
     ->setFinder($finder);
