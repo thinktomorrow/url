@@ -25,10 +25,6 @@ class Root
         $this->defaultScheme = $defaultScheme;
 
         $this->valid = (false !== filter_var($this->get(), FILTER_VALIDATE_URL));
-
-        //        if ($this->composeScheme() == 'https://') {
-        //            $this->secure();
-        //        }
     }
 
     public static function fromString(string $host): self

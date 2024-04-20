@@ -100,6 +100,11 @@ class ParsedUrl
         );
     }
 
+    public function getRoot(): Root
+    {
+        return $this->root;
+    }
+
     #[Pure]
     public function getScheme(): ?string
     {

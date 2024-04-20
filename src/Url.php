@@ -24,6 +24,11 @@ class Url
         return $this;
     }
 
+    public function getRoot(): Root
+    {
+        return $this->parsedUrl->getRoot();
+    }
+
     public function secure(): self
     {
         return $this->scheme();

@@ -249,6 +249,14 @@ class UrlTest extends TestCase
         Url::fromString('javascript://');
     }
 
+    public function test_it_can_get_root()
+    {
+        $this->assertEquals(
+            Root::fromString('foobar.com')->defaultScheme(),
+            Url::fromString('foobar.com')->getRoot()
+        );
+    }
+
     /** @test */
     public function url_provides_specific_parts()
     {

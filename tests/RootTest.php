@@ -20,6 +20,7 @@ class RootTest extends TestCase
         $urls = [
             'example.com' => 'https://example.com',
             'example.com/' => 'https://example.com',
+            'foobar.com' => 'https://foobar.com',
             'example.com/foo/bar' => 'https://example.com',
             'http://example.com' => 'http://example.com',
             'https://example.com' => 'https://example.com',
