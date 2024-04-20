@@ -53,26 +53,26 @@ class RootTest extends TestCase
         ];
 
         foreach ($urls as $original => $result) {
-            $this->assertEquals($result, Root::fromString($original)->secure()->get());
+            $this->assertEquals($result, Root::fromString($original)->isSecure()->get());
         }
 
-        $this->assertEquals(Root::fromString('uk.foobar.com')->secure(), Root::fromString('https://uk.foobar.com'));
+        $this->assertEquals(Root::fromString('uk.foobar.com')->isSecure(), Root::fromString('https://uk.foobar.com'));
     }
 
     /** @test */
     public function it_can_validate_root()
     {
-        $this->assertFalse(Root::fromString('')->valid());
-        $this->assertFalse(Root::fromString('foobar')->valid());
+        $this->assertFalse(Root::fromString('')->isValid());
+        $this->assertFalse(Root::fromString('foobar')->isValid());
 
-        $this->assertTrue(Root::fromString('foobar.com')->valid());
-        $this->assertTrue(Root::fromString('https://example.com')->valid());
+        $this->assertTrue(Root::fromString('foobar.com')->isValid());
+        $this->assertTrue(Root::fromString('https://example.com')->isValid());
     }
 
     /** @test */
     public function it_can_validate_root_for_hashtag()
     {
-        $this->assertFalse(Root::fromString('#')->valid());
+        $this->assertFalse(Root::fromString('#')->isValid());
     }
 
     /** @test */
@@ -100,7 +100,7 @@ class RootTest extends TestCase
         ];
 
         foreach ($urls as $original => $result) {
-            $this->assertEquals($result, Root::fromString($original)->scheme());
+            $this->assertEquals($result, Root::fromString($original)->getScheme());
         }
     }
 }

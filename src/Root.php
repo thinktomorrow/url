@@ -40,16 +40,16 @@ class Root
     public function get(): string
     {
         return $this->composeScheme() .
-                $this->host() .
-                ($this->port() ? ':'.$this->port : null);
+                $this->getHost() .
+                ($this->getPort() ? ':'.$this->port : null);
     }
 
-    public function valid(): bool
+    public function isValid(): bool
     {
         return $this->valid;
     }
 
-    public function secure(): self
+    public function isSecure(): self
     {
         $this->scheme = 'https';
 
@@ -59,8 +59,8 @@ class Root
     #[Pure]
     private function composeScheme(): ?string
     {
-        return $this->scheme()
-            ? $this->scheme().'://'
+        return $this->getScheme()
+            ? $this->getScheme().'://'
             : ($this->anonymousScheme ? '//' : $this->defaultScheme);
     }
 
@@ -86,17 +86,17 @@ class Root
         );
     }
 
-    public function host(): ?string
+    public function getHost(): ?string
     {
         return $this->host;
     }
 
-    public function scheme(): ?string
+    public function getScheme(): ?string
     {
         return $this->scheme;
     }
 
-    public function port(): ?string
+    public function getPort(): ?string
     {
         return $this->port;
     }

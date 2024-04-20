@@ -30,9 +30,9 @@ class ParsedUrl
     public function get(): string
     {
         $result = $this->root->get() .
-            ($this->hasPath() ? '/' . $this->path() : '') .
-            ($this->hasQuery() ? '?' . $this->query() : '') .
-            ($this->hasHash() ? '#' . $this->hash() : '');
+            ($this->hasPath() ? '/' . $this->getPath() : '') .
+            ($this->hasQuery() ? '?' . $this->getQuery() : '') .
+            ($this->hasHash() ? '#' . $this->getHash() : '');
 
         return str_replace('///', '//', $result);
     }
@@ -62,7 +62,7 @@ class ParsedUrl
         return [
             'root' => $root,
             // Check if path could match host because this means something as foobar.com is passed and this is regarded as 'path' by the parse_url function
-            'path' => (isset($parsed['path']) && $parsed['path'] && $parsed['path'] != $root->host()) ? trim($parsed['path'], '/') : null,
+            'path' => (isset($parsed['path']) && $parsed['path'] && $parsed['path'] != $root->getHost()) ? trim($parsed['path'], '/') : null,
             'query' => $parsed['query'] ?? null,
             'hash' => $parsed['fragment'] ?? null,
         ];
@@ -101,54 +101,59 @@ class ParsedUrl
     }
 
     #[Pure]
-    public function scheme(): ?string
+    public function getScheme(): ?string
     {
-        return $this->root->scheme();
+        return $this->root->getScheme();
     }
 
     #[Pure]
-    public function host(): ?string
+    public function getHost(): ?string
     {
-        return $this->root->host();
+        return $this->root->getHost();
     }
 
     #[Pure]
-    public function port(): ?string
+    public function getPort(): ?string
     {
-        return $this->root->port();
+        return $this->root->getPort();
     }
 
-    public function path(): ?string
+    public function getPath(): ?string
     {
         return $this->path;
     }
 
-    public function query(): ?string
+    public function getQuery(): ?string
     {
         return $this->query;
     }
 
-    public function hash(): ?string
+    public function getHash(): ?string
     {
         return $this->hash;
+    }
+
+    public function isSecure(): bool
+    {
+        return $this->root->getScheme() === 'https';
     }
 
     #[Pure]
     public function hasScheme(): bool
     {
-        return ! ! $this->root->scheme();
+        return ! ! $this->root->getScheme();
     }
 
     #[Pure]
     public function hasHost(): bool
     {
-        return ! ! $this->root->host();
+        return ! ! $this->root->getHost();
     }
 
     #[Pure]
     public function hasPort(): bool
     {
-        return ! ! $this->root->port();
+        return ! ! $this->root->getPort();
     }
 
     public function hasPath(): bool

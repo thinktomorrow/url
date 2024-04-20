@@ -48,32 +48,32 @@ class Url
 
     public function getScheme(): ?string
     {
-        return $this->parsedUrl->scheme();
+        return $this->parsedUrl->getScheme();
     }
 
     public function getHost(): ?string
     {
-        return $this->parsedUrl->host();
+        return $this->parsedUrl->getHost();
     }
 
     public function getPort(): ?string
     {
-        return $this->parsedUrl->port();
+        return $this->parsedUrl->getPort();
     }
 
     public function getPath(): ?string
     {
-        return $this->parsedUrl->path();
+        return $this->parsedUrl->getPath();
     }
 
     public function getQuery(): ?string
     {
-        return $this->parsedUrl->query();
+        return $this->parsedUrl->getQuery();
     }
 
     public function getHash(): ?string
     {
-        return $this->parsedUrl->hash();
+        return $this->parsedUrl->getHash();
     }
 
     public function hasScheme(): bool
@@ -111,6 +111,11 @@ class Url
         return $this->parsedUrl->hasHost();
     }
 
+    public function isSecure(): bool
+    {
+        return $this->parsedUrl->isSecure();
+    }
+
     public function localize(string $localeSegment = null, array $available_locales = []): self
     {
         $localizedPath = str_replace(
@@ -130,7 +135,7 @@ class Url
             return '';
         }
 
-        $path_segments = explode('/', trim($this->parsedUrl->path(), '/'));
+        $path_segments = explode('/', trim($this->parsedUrl->getPath(), '/'));
 
         // Remove the locale segment if present
         if (in_array($path_segments[0], array_keys($available_locales))) {
