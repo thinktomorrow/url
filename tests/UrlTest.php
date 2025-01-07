@@ -9,14 +9,12 @@ use Thinktomorrow\Url\Url;
 
 class UrlTest extends TestCase
 {
-    /** @test */
-    public function it_can_be_instantiated()
+    public function test_it_can_be_instantiated()
     {
         $this->assertInstanceOf(Url::class, Url::fromString('fake'));
     }
 
-    /** @test */
-    public function without_localization_parameter_urls_aren_not_altered()
+    public function test_without_localization_parameter_urls_aren_not_altered()
     {
         $urls = [
             'http://example.com/fr',
@@ -34,8 +32,7 @@ class UrlTest extends TestCase
         }
     }
 
-    /** @test */
-    public function it_accepts_a_locale_segment()
+    public function test_it_accepts_a_locale_segment()
     {
         $urls = [
             null => '/fr',
@@ -58,8 +55,7 @@ class UrlTest extends TestCase
         }
     }
 
-    /** @test */
-    public function it_can_set_a_hidden_locale()
+    public function test_it_can_set_a_hidden_locale()
     {
         $urls = [
             '/foo/bar' => '/foo/bar',
@@ -80,16 +76,14 @@ class UrlTest extends TestCase
         }
     }
 
-    /** @test */
-    public function with_missing_host_it_still_tries_to_render_a_proper_url()
+    public function test_with_missing_host_it_still_tries_to_render_a_proper_url()
     {
         $this->assertEquals('/foo/bar', Url::fromString('foo/bar')->get());
         $this->assertEquals('http://foo/bar', Url::fromString('foo/bar')->nonSecure()->get());
         $this->assertEquals('https://foo/bar', Url::fromString('foo/bar')->secure()->get());
     }
 
-    /** @test */
-    public function it_removes_existing_locale_segment()
+    public function test_it_removes_existing_locale_segment()
     {
         $urls = [
             '' => '/nl',
@@ -110,8 +104,7 @@ class UrlTest extends TestCase
         }
     }
 
-    /** @test */
-    public function it_keeps_passed_root_if_not_set_explicitly()
+    public function test_it_keeps_passed_root_if_not_set_explicitly()
     {
         $this->assertEquals(
             'http://example.fr/fr/foo/bar',
@@ -121,8 +114,7 @@ class UrlTest extends TestCase
         );
     }
 
-    /** @test */
-    public function it_can_set_custom_root()
+    public function test_it_can_set_custom_root()
     {
         $this->assertEquals(
             'https://example.com/fr/foo/bar',
@@ -133,8 +125,7 @@ class UrlTest extends TestCase
         );
     }
 
-    /** @test */
-    public function it_can_set_custom_root_with_secure()
+    public function test_it_can_set_custom_root_with_secure()
     {
         $this->assertEquals(
             'https://example.com/fr/foo/bar',
@@ -146,8 +137,7 @@ class UrlTest extends TestCase
         );
     }
 
-    /** @test */
-    public function it_can_set_custom_unsecure_root_with_secure()
+    public function test_it_can_set_custom_unsecure_root_with_secure()
     {
         $this->assertEquals(
             'https://example.com/fr/foo/bar',
@@ -159,8 +149,7 @@ class UrlTest extends TestCase
         );
     }
 
-    /** @test */
-    public function it_can_set_custom_root_without_path()
+    public function test_it_can_set_custom_root_without_path()
     {
         $this->assertEquals(
             'https://example.com',
@@ -170,8 +159,7 @@ class UrlTest extends TestCase
         );
     }
 
-    /** @test */
-    public function it_can_set_url_as_secure()
+    public function test_it_can_set_url_as_secure()
     {
         $this->assertEquals(
             'https://example.com/fr/foo/bar',
@@ -182,8 +170,7 @@ class UrlTest extends TestCase
         );
     }
 
-    /** @test */
-    public function it_can_set_url_as_unsecure()
+    public function test_it_can_set_url_as_unsecure()
     {
         $this->assertEquals(
             'http://example.com/fr/foo/bar',
@@ -194,8 +181,7 @@ class UrlTest extends TestCase
         );
     }
 
-    /** @test */
-    public function it_can_check_if_given_url_is_absolute()
+    public function test_it_can_check_if_given_url_is_absolute()
     {
         $urls = [
             '/foo/bar' => false,
@@ -212,14 +198,12 @@ class UrlTest extends TestCase
         }
     }
 
-    /** @test */
-    public function instance_can_be_printed_as_string()
+    public function test_instance_can_be_printed_as_string()
     {
         $this->assertEquals('foobar.com', (string) Url::fromString('foobar.com'));
     }
 
-    /** @test */
-    public function url_scheme_stays_the_same()
+    public function test_url_scheme_stays_the_same()
     {
         $this->assertEquals('http://foobar.com', Url::fromString('http://foobar.com')->get());
         $this->assertEquals('https://foobar.com', Url::fromString('https://foobar.com')->get());
@@ -227,22 +211,19 @@ class UrlTest extends TestCase
         $this->assertEquals('foobar.com', Url::fromString('foobar.com')->get());
     }
 
-    /** @test */
-    public function url_can_be_forced_to_prepend_non_secure_scheme()
+    public function test_url_can_be_forced_to_prepend_non_secure_scheme()
     {
         $this->assertEquals('http://foobar.com', Url::fromString('foobar.com')->nonSecure()->get());
     }
 
-    /** @test */
-    public function url_can_be_forced_to_prepend_secure_scheme()
+    public function test_url_can_be_forced_to_prepend_secure_scheme()
     {
         $this->assertEquals('https://foobar.com', Url::fromString('foobar.com')->secure()->get());
         $this->assertEquals('https://foobar.com', Url::fromString('http://foobar.com')->secure()->get());
         $this->assertEquals('https://foobar.com', Url::fromString('https://foobar.com')->secure()->get());
     }
 
-    /** @test */
-    public function it_throws_exception_if_passed_url_string_is_invalid()
+    public function test_it_throws_exception_if_passed_url_string_is_invalid()
     {
         $this->expectException(InvalidUrl::class);
 
@@ -257,8 +238,7 @@ class UrlTest extends TestCase
         );
     }
 
-    /** @test */
-    public function url_provides_specific_parts()
+    public function test_url_provides_specific_parts()
     {
         $url = Url::fromString('https://foobar.com:5000/path/to/freedom?search=towards#heaven');
 
