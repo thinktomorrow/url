@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Thinktomorrow\Url;
 
-use JetBrains\PhpStorm\ArrayShape;
-use JetBrains\PhpStorm\Pure;
 use Thinktomorrow\Url\Exceptions\InvalidUrl;
 
 class ParsedUrl
@@ -24,7 +22,7 @@ class ParsedUrl
 
     public static function fromString(string $url): self
     {
-        return new static(...array_values(static::parse($url)));
+        return new self(...array_values(self::parse($url)));
     }
 
     public function get(): string
@@ -37,12 +35,14 @@ class ParsedUrl
         return str_replace('///', '//', $result);
     }
 
-    #[ArrayShape([
-        'root' => Root::class,
-        'path' => 'null|string',
-        'query' => 'null|string',
-        'hash' => 'null|string',
-    ])]
+    /**
+     * @return array{
+     *     root: Root,
+     *     path: null|string,
+     *     query: null|string,
+     *     hash: null|string
+     * }
+     */
     private static function parse(string $url): array
     {
         // Specific case where we accept double slashes and convert it to a relative url.
@@ -68,10 +68,9 @@ class ParsedUrl
         ];
     }
 
-    #[Pure]
     public function replaceRoot(Root $root): self
     {
-        return new static(
+        return new self(
             $root,
             $this->path,
             $this->query,
@@ -81,7 +80,7 @@ class ParsedUrl
 
     public function replaceScheme(string $scheme): self
     {
-        return new static(
+        return new self(
             $this->root->replaceScheme($scheme),
             $this->path,
             $this->query,
@@ -89,10 +88,9 @@ class ParsedUrl
         );
     }
 
-    #[Pure]
     public function replacePath(string $path): self
     {
-        return new static(
+        return new self(
             $this->root,
             trim($path, '/'),
             $this->query,
@@ -105,19 +103,16 @@ class ParsedUrl
         return $this->root;
     }
 
-    #[Pure]
     public function getScheme(): ?string
     {
         return $this->root->getScheme();
     }
 
-    #[Pure]
     public function getHost(): ?string
     {
         return $this->root->getHost();
     }
 
-    #[Pure]
     public function getPort(): ?string
     {
         return $this->root->getPort();
@@ -143,19 +138,16 @@ class ParsedUrl
         return $this->root->getScheme() === 'https';
     }
 
-    #[Pure]
     public function hasScheme(): bool
     {
         return ! ! $this->root->getScheme();
     }
 
-    #[Pure]
     public function hasHost(): bool
     {
         return ! ! $this->root->getHost();
     }
 
-    #[Pure]
     public function hasPort(): bool
     {
         return ! ! $this->root->getPort();

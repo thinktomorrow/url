@@ -29,10 +29,9 @@ class Root
 
     public static function fromString(string $host): self
     {
-        return new static(...array_values(static::parse($host)));
+        return new self(...array_values(self::parse($host)));
     }
 
-    #[Pure]
     public function get(): string
     {
         return $this->composeScheme() .
@@ -52,7 +51,6 @@ class Root
         return $this;
     }
 
-    #[Pure]
     private function composeScheme(): ?string
     {
         return $this->getScheme()
@@ -62,7 +60,7 @@ class Root
 
     public function replaceScheme(string $scheme): self
     {
-        return new static(
+        return new self(
             $scheme,
             $this->host,
             $this->port,
@@ -73,7 +71,7 @@ class Root
 
     public function defaultScheme(?string $defaultScheme = null): self
     {
-        return new static(
+        return new self(
             $this->scheme,
             $this->host,
             $this->port,
@@ -116,13 +114,12 @@ class Root
 
         return [
             'scheme' => $parsed['scheme'] ?? null,
-            'host' => static::parseHost($parsed),
+            'host' => self::parseHost($parsed),
             'port' => isset($parsed['port']) ? (string) $parsed['port'] : null,
-            'anonymousScheme' => static::isAnonymousScheme($url),
+            'anonymousScheme' => self::isAnonymousScheme($url),
         ];
     }
 
-    #[Pure]
     public function __toString(): string
     {
         return $this->get();
