@@ -121,7 +121,7 @@ class Url
         return $this->parsedUrl->isSecure();
     }
 
-    public function localize(string $localeSegment = null, array $available_locales = []): self
+    public function localize(?string $localeSegment = null, array $available_locales = []): self
     {
         $localizedPath = str_replace(
             '//',
