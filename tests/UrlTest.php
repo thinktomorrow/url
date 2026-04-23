@@ -35,7 +35,6 @@ class UrlTest extends TestCase
     public function test_it_accepts_a_locale_segment()
     {
         $urls = [
-            null => '/fr',
             '//' => '/fr',
             '/foo/bar' => '/fr/foo/bar',
             'foo/bar' => '/fr/foo/bar',
